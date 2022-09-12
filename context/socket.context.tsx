@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { SOCKET_URL } from "../config/default";
-import { nanoid } from "nanoid";
+import EVENTS from "../config/events";
 
 interface Context {
   socket: Socket;
@@ -22,7 +22,11 @@ const SocketContext = createContext<Context>({
 function SocketsProvider(props: any) {
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState("");
-  const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState({});
+
+  socket.on(EVENTS.SERVER.ROOMS, (value) => {
+    setRooms(value);
+  });
 
   return (
     <SocketContext.Provider
